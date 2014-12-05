@@ -69,8 +69,7 @@ hanoi2 n (p1:p2:p3:ps)
 		++ [(p1,p2)] 
 		++ hanoi2 (n-1) (p3:p2:p1:ps)	
 	| otherwise = 
-		hanoi2 (n `mod` 2) (p1:p3:p2:ps) 
-		++ hanoi2 (n - (n `mod` 2)) (p1:p2:ps) 
-		++ hanoi2 (n `mod` 2) (p3:p2:p1:ps)
-hanoi2 n (p1:p2:ps) = [("p1","dog")]  
+		hanoi2 (n `div` 2) (p1:p3:p2:ps) 
+		++ hanoi2 (n - (n `div` 2)) (p1:p2:ps) 
+		++ hanoi2 (n `div` 2) (p3:p2:p1:ps)
 
