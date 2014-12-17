@@ -44,14 +44,19 @@ wordsFrom hand = filter (`formableBy` hand) allWords
 
 wordFitsTemplate :: Template -> Hand -> String -> Bool
 wordFitsTemplate template hand word
-	| (length template == length word) = word `elem` [ possibleWord | possibleWord <- wordsFrom hand, lengthHelper possibleWord word && charPositionHelper template possibleWord]
+	| length template == length word = word `elem` getPossibleWords
 	| otherwise = False 
+	where getPossibleWords = [ possibleWord | possibleWord <- wordsFrom (hand ++ getLettersFromTemplate template), charPositionHelper template possibleWord]
 
-lengthHelper :: String -> String -> Bool
-lengthHelper str1 str2 = length str1 == length str2
+getLettersFromTemplate :: Template -> Hand
+getLettersFromTemplate [] = []
+getLettersFromTemplate (x:xy)
+	| x == '?' = getLettersFromTemplate xy
+	| otherwise = getLettersFromTemplate xy ++ [x]
 
 charPositionHelper :: Template -> String -> Bool
 charPositionHelper [] _ = True
+charPositionHelper _ [] = True
 charPositionHelper (x:xs) (y:ys)
 	| x == '?' = charPositionHelper xs ys
 	| x == y = charPositionHelper xs ys 
