@@ -33,16 +33,23 @@ type Template = String
 type STemplate = Template
 
 -- Write your code below:
+
+-- EXERCISE 1
 formableBy :: String -> Hand -> Bool
 formableBy [] _ = True
 formableBy (x:xs) hand  
 	| (x `elem` hand) = formableBy xs (delete x hand)
 	| otherwise = False; 
 
+-- EXERCISE 2
 wordsFrom :: Hand -> [String]
 wordsFrom hand = filter (`formableBy` hand) allWords
 
-wordFitsTemplate :: Template -> Hand -> String -> Bool
+-- EXERCISE 3
+
+-- Version 1
+-- I misunderstood here and wanted to validate it was a valid scrable word as well as making sure it fit the template
+wordFitsTemplateV1 :: Template -> Hand -> String -> Bool
 wordFitsTemplate template hand word
 	| length template == length word = word `elem` getPossibleWords
 	| otherwise = False 
@@ -62,6 +69,10 @@ charPositionHelper (x:xs) (y:ys)
 	| x == y = charPositionHelper xs ys 
 	| otherwise = False
 
+-- Version 2
+
+
+-- EXERCISE 4
 
 
 
