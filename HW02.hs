@@ -49,11 +49,47 @@ wordsFrom hand = filter (`formableBy` hand) allWords
 
 -- Version 1
 -- I misunderstood here and wanted to validate it was a valid scrable word as well as making sure it fit the template
+
+
+-- Version 2
+
+wordFitsTemplate :: Template -> Hand -> String -> Bool
+wordFitsTemplate [] _ [] = True
+wordFitsTemplate [] _ _ = False
+wordFitsTemplate _ _ [] = False
+wordFitsTemplate (t:template) hand (w:word) 
+	| t == '?' && formableBy [w] hand = wordFitsTemplate template (delete w hand) word
+	| t == w = wordFitsTemplate template hand word 
+	| otherwise = False
+
+
+
+
+-- EXERCISE 4
+
+wordsFittingTemplateFilter :: Template -> String -> Bool
+wordsFittingTemplateFilter [] [] = True
+wordsFittingTemplateFilter [] _ = False
+wordsFittingTemplateFilter _ [] = False
+wordsFittingTemplateFilter (x:xs) (y:ys)
+	| x == '?' = wordsFittingTemplateFilter xs ys
+	| x == y = wordsFittingTemplateFilter xs ys 
+	| otherwise = False
+
+wordsFittingTemplate :: Template -> Hand -> [String]
+wordsFittingTemplate template hand = [ possibleWord | possibleWord <- totalHand,  wordsFittingTemplateFilter template possibleWord]
+   where totalHand = wordsFrom (hand ++ getLettersFromTemplate template)
+
+
+{- 
+wordsFittingTemplateFilter :: Template -> String -> Bool
+wordsFittingTemplateFilter template word =  wordFitsTemplateHelper template word && (length template == length word)
+
 wordFitsTemplateV1 :: Template -> Hand -> String -> Bool
-wordFitsTemplate template hand word
+wordFitsTemplateV1 template hand word
 	| length template == length word = word `elem` getPossibleWords
 	| otherwise = False 
-	where getPossibleWords = [ possibleWord | possibleWord <- wordsFrom (hand ++ getLettersFromTemplate template), charPositionHelper template possibleWord]
+	where getPossibleWords = [ possibleWord | possibleWord <- wordsFrom (hand ++ getLettersFromTemplate template), wordFitsTemplateHelper template possibleWord]
 
 getLettersFromTemplate :: Template -> Hand
 getLettersFromTemplate [] = []
@@ -61,18 +97,13 @@ getLettersFromTemplate (x:xy)
 	| x == '?' = getLettersFromTemplate xy
 	| otherwise = getLettersFromTemplate xy ++ [x]
 
-charPositionHelper :: Template -> String -> Bool
-charPositionHelper [] _ = True
-charPositionHelper _ [] = True
-charPositionHelper (x:xs) (y:ys)
-	| x == '?' = charPositionHelper xs ys
-	| x == y = charPositionHelper xs ys 
+wordFitsTemplateHelper :: Template -> String -> Bool
+wordFitsTemplateHelper [] _ = True
+wordFitsTemplateHelper _ [] = True
+wordFitsTemplateHelper (x:xs) (y:ys)
+	| x == '?' = wordFitsTemplateHelper xs ys
+	| x == y = wordFitsTemplateHelper xs ys 
 	| otherwise = False
 
--- Version 2
-
-
--- EXERCISE 4
-
-
+	 -}
 
