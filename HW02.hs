@@ -28,34 +28,27 @@ wordFitsTemplate (t:template) hand (w:word)
 	| otherwise = False
 
 -- EXERCISE 4
-
 wordsFittingTemplate :: Template -> Hand -> [String]
 wordsFittingTemplate template hand = [ possibleWord | possibleWord <- wordsFrom (hand ++ template), wordFitsTemplate template hand possibleWord]
 
+-- EXERCISE 5
+scrabbleValueWord :: String -> Int
+scrabbleValueWord [] = 0
+scrabbleValueWord (w:word) = scrabbleValue w + scrabbleValueWord word 
 
-{- 
-wordsFittingTemplateFilter :: Template -> String -> Bool
-wordsFittingTemplateFilter template word =  wordFitsTemplateHelper template word && (length template == length word)
+-- EXERCISE 6
+bestWords :: [String] -> [(String,Int)]
+bestWords [] = []
+bestWords words = [ pair | pair <- sortedWordsWithvalues, snd pair == snd (head sortedWordsWithvalues)] 
+	where sortedWordsWithvalues = sortBy wordSorter (matchValues words)
 
-wordFitsTemplateV1 :: Template -> Hand -> String -> Bool
-wordFitsTemplateV1 template hand word
-	| length template == length word = word `elem` getPossibleWords
-	| otherwise = False 
-	where getPossibleWords = [ possibleWord | possibleWord <- wordsFrom (hand ++ getLettersFromTemplate template), wordFitsTemplateHelper template possibleWord]
+wordSorter :: (String,Int) -> (String,Int) -> Ordering
+wordSorter (word,val) (word2, val2) 
+	| val < val2 = GT
+	| val >= val2 = LT
 
-getLettersFromTemplate :: Template -> Hand
-getLettersFromTemplate [] = []
-getLettersFromTemplate (x:xy)
-	| x == '?' = getLettersFromTemplate xy
-	| otherwise = getLettersFromTemplate xy ++ [x]
+matchValues :: [String] -> [(String,Int)]
+matchValues words = zip words $ map scrabbleValueWord words
 
-wordFitsTemplateHelper :: Template -> String -> Bool
-wordFitsTemplateHelper [] _ = True
-wordFitsTemplateHelper _ [] = True
-wordFitsTemplateHelper (x:xs) (y:ys)
-	| x == '?' = wordFitsTemplateHelper xs ys
-	| x == y = wordFitsTemplateHelper xs ys 
-	| otherwise = False
-
-	 -}
+-- EXERCISE 7
 
